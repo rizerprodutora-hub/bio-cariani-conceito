@@ -73,7 +73,7 @@ choose(tabs[n], true);
 const hash = location.hash.slice(1);
 const byHash = tabs.find((t) => t.id === 't-' + hash);
 if (byHash) choose(byHash);
-/* ---------- abas passam sozinhas a cada 5 s ---------- */
+/* ---------- abas passam sozinhas a cada 12 s ---------- */
 const fitPanels = () => {
 panelsBox.style.minHeight = '';
 let max = 0;
@@ -81,7 +81,7 @@ $$('.panel', panelsBox).forEach((p) => { const was = p.hidden; p.hidden = false;
 panelsBox.style.minHeight = max + 'px';
 };
 fitPanels(); addEventListener('resize', fitPanels);
-const STEP = 5000; let acc = 0, last = 0, running = !reduce, hold = 0, inView = true, rafA = 0;
+const STEP = 12000; let acc = 0, last = 0, running = !reduce, hold = 0, inView = true, rafA = 0;
 const tabsBox = $('.tabs');
 new IntersectionObserver((e) => { inView = e[0].isIntersecting; }, { threshold: 0.3 }).observe(panelsBox);
 function stopAuto() { running = false; tabsBox.classList.remove('is-auto'); pill.style.setProperty('--p', 0); }
