@@ -43,6 +43,7 @@ setTimeout(() => logo.classList.add('is-shining'), 500);
 const tabs = $$('[role="tab"]');
 const pill = $('.tabs__pill');
 const panelsBox = $('.panels');
+let auto = false;
 function choose(tab, focus) {
 const i = tabs.indexOf(tab);
 const current = $('.panel.is-on');
@@ -56,14 +57,13 @@ current.classList.remove('is-on'); current.hidden = true;
 next.hidden = false; next.classList.add('is-on');
 if (!window.gsap || reduce) return;
 const h1 = panelsBox.offsetHeight;
-gsap.fromTo(panelsBox, { height: h0 }, { height: h1, duration: 0.4, ease: 'power3.out', clearProps: 'height' });
-gsap.from(next.children, { opacity: 0, y: 12, duration: 0.45, stagger: 0.04, ease: 'power3.out' });
+gsap.from(next.children, { opacity: 0, y: 12, duration: 0.45, stagger: 0.04, ease: 'power3.out', clearProps: 'transform,opacity' });
 const t = $('.tabs').getBoundingClientRect().top;
-if (t < 0) scrollBy({ top: t - 8, behavior: 'smooth' });
+if (t < 0 && !auto) scrollBy({ top: t - 8, behavior: 'smooth' });
 }
 tabs.forEach((t, i) => {
 t.tabIndex = i ? -1 : 0;
-t.addEventListener('click', () => choose(t));
+t.addEventListener('click', (e) => { if (e.isTrusted) stopAuto(); choose(t); });
 t.addEventListener('keydown', (e) => {
 if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
 const n = (i + (e.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length;
@@ -73,6 +73,41 @@ choose(tabs[n], true);
 const hash = location.hash.slice(1);
 const byHash = tabs.find((t) => t.id === 't-' + hash);
 if (byHash) choose(byHash);
+/* ---------- abas passam sozinhas a cada 5 s ---------- */
+const fitPanels = () => {
+panelsBox.style.minHeight = '';
+let max = 0;
+$$('.panel', panelsBox).forEach((p) => { const was = p.hidden; p.hidden = false; max = Math.max(max, p.offsetHeight); p.hidden = was; });
+panelsBox.style.minHeight = max + 'px';
+};
+fitPanels(); addEventListener('resize', fitPanels);
+const STEP = 5000; let acc = 0, last = 0, running = !reduce, hold = 0, inView = true, rafA = 0;
+const tabsBox = $('.tabs');
+new IntersectionObserver((e) => { inView = e[0].isIntersecting; }, { threshold: 0.3 }).observe(panelsBox);
+function stopAuto() { running = false; tabsBox.classList.remove('is-auto'); pill.style.setProperty('--p', 0); }
+function loop(now) {
+if (!running) return;
+const dt = last ? now - last : 0; last = now;
+if (!hold && inView && !document.hidden) acc += dt;
+pill.style.setProperty('--p', Math.min(acc / STEP, 1));
+if (acc >= STEP) {
+acc = 0; auto = true;
+const cur = tabs.findIndex((t) => t.getAttribute('aria-selected') === 'true');
+choose(tabs[(cur + 1) % tabs.length]);
+auto = false;
+}
+rafA = requestAnimationFrame(loop);
+}
+if (running) { tabsBox.classList.add('is-auto'); rafA = requestAnimationFrame(loop); }
+panelsBox.addEventListener('pointerdown', stopAuto, { once: true });
+addEventListener('rc:pause', () => { hold++; });
+addEventListener('rc:resume', () => { hold = Math.max(0, hold - 1); });
+/* ---------- brilho passando no cartão principal, de tempos em tempos ---------- */
+if (!reduce) setInterval(() => {
+const f = $('.panel.is-on .feature');
+if (!f || document.hidden) return;
+f.classList.remove('is-gleam'); void f.offsetWidth; f.classList.add('is-gleam');
+}, 6000);
 /* ---------- cupons ---------- */
 const toast = $('.toast');
 const say = (m) => { toast.textContent = m; toast.classList.add('is-on'); clearTimeout(say.h); say.h = setTimeout(() => toast.classList.remove('is-on'), 2000); };
@@ -85,7 +120,10 @@ setTimeout(() => { tag.classList.remove('is-done'); tag.textContent = code; }, 1
 }));
 /* ---------- vídeo ---------- */
 const sheet = $('.sheet'), slot = $('.sheet__video');
-const close = () => { sheet.hidden = true; slot.innerHTML = ''; };
+const close = () => { sheet.hidden = true; slot.innerHTML = ''; dispatchEvent(new Event('rc:resume')); };
+const playYT = (id) => { slot.innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0&playsinline=1" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen title="Vídeo do canal"></iframe>`; sheet.hidden = false; dispatchEvent(new Event('rc:pause')); $('.sheet__close').focus(); };
+addEventListener('rc:video', (e) => playYT(e.detail));
+addEventListener('rc:toast', (e) => say(e.detail));
 $$('[data-yt]').forEach((b) => b.addEventListener('click', () => {
 slot.innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${b.dataset.yt}?autoplay=1&rel=0&playsinline=1" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen title="Vídeo do canal"></iframe>`;
 sheet.hidden = false;

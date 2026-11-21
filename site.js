@@ -52,9 +52,9 @@ G.to(o, { v: end, duration: 1.8, ease: 'power3.out', scrollTrigger: { trigger: b
 onUpdate: () => (b.textContent = o.v.toFixed(dec).replace('.', ',') + suf) });
 });
 [['.courses', '.course'], ['.videos', '.vid'], ['.partners', '.partner']].forEach(([box, item]) => {
-G.from($$(item, $(box)), { y: 40, opacity: 0, duration: 0.9, stagger: 0.08, ease: 'expo.out', scrollTrigger: { trigger: box, start: 'top 85%' } });
+G.from($$(item, $(box)), { y: 40, opacity: 0, duration: 0.9, stagger: 0.08, ease: 'expo.out', clearProps: 'transform,opacity', scrollTrigger: { trigger: box, start: 'top 85%', once: true } });
 });
-G.from('.unit, .biz', { x: -16, opacity: 0, duration: 0.7, stagger: 0.05, ease: 'power3.out', scrollTrigger: { trigger: '.ctrc', start: 'top 75%' } });
+G.from('.unit, .biz', { x: -16, opacity: 0, duration: 0.7, stagger: 0.05, ease: 'power3.out', clearProps: 'transform,opacity', scrollTrigger: { trigger: '.ctrc', start: 'top 75%', once: true } });
 if (fine) G.fromTo('.ctrc__photo img', { yPercent: -12 }, { yPercent: 0, ease: 'none', scrollTrigger: { trigger: '.ctrc__photo', start: 'top bottom', end: 'bottom top', scrub: true } });
 G.to('.foot__logo .fill', { clipPath: 'inset(0 0% 0 0)', ease: 'none', scrollTrigger: { trigger: '.foot', start: 'top 95%', end: 'bottom bottom', scrub: true } });
 }
