@@ -84,11 +84,14 @@ fitPanels(); addEventListener('resize', fitPanels);
 const STEP = 12000; let acc = 0, last = 0, running = !reduce, hold = 0, inView = true, rafA = 0;
 const tabsBox = $('.tabs');
 new IntersectionObserver((e) => { inView = e[0].isIntersecting; }, { threshold: 0.3 }).observe(panelsBox);
-function stopAuto() { running = false; tabsBox.classList.remove('is-auto'); pill.style.setProperty('--p', 0); }
+const IDLE = 20000; let quietUntil = 0;
+function stopAuto() { if (!running) return; quietUntil = performance.now() + IDLE; acc = 0; tabsBox.classList.remove('is-auto'); pill.style.setProperty('--p', 0); }
 function loop(now) {
 if (!running) return;
 const dt = last ? now - last : 0; last = now;
-if (!hold && inView && !document.hidden) acc += dt;
+const quiet = now < quietUntil;
+if (!quiet && !tabsBox.classList.contains('is-auto')) tabsBox.classList.add('is-auto');
+if (!quiet && !hold && inView && !document.hidden) acc += dt;
 pill.style.setProperty('--p', Math.min(acc / STEP, 1));
 if (acc >= STEP) {
 acc = 0; auto = true;
@@ -99,7 +102,10 @@ auto = false;
 rafA = requestAnimationFrame(loop);
 }
 if (running) { tabsBox.classList.add('is-auto'); rafA = requestAnimationFrame(loop); }
-panelsBox.addEventListener('pointerdown', stopAuto, { once: true });
+['pointerdown', 'wheel', 'touchmove', 'keydown'].forEach((ev) => {
+panelsBox.addEventListener(ev, stopAuto, { passive: true });
+tabsBox.addEventListener(ev, stopAuto, { passive: true });
+});
 addEventListener('rc:pause', () => { hold++; });
 addEventListener('rc:resume', () => { hold = Math.max(0, hold - 1); });
 /* ---------- brilho passando no cartão principal, de tempos em tempos ---------- */
