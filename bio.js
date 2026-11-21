@@ -19,19 +19,23 @@ const parts = $$('svg path', logo);
 const box = logo.getBoundingClientRect();
 const dx = innerWidth / 2 - (box.left + box.width / 2);
 const dy = innerHeight / 2 - (box.top + box.height / 2);
-const s = Math.min(1.9, (innerWidth * 0.7) / box.width);
-const tl = gsap.timeline({ defaults: { ease: 'expo.out' } });
+const s = Math.min(1.7, (innerWidth * 0.62) / box.width);
+const cut = $('.cover__cut'), back = $('.cover__back'), glow = $('.cover__glow');
+const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
 gsap.set(logo, { x: dx, y: dy, scale: s });
-gsap.set('.cover__photo', { clipPath: 'inset(100% 0 0 0 round 26px)' });
-gsap.set(content, { opacity: 0, y: 24 });
-tl.from(parts, { x: (i) => [-140, 120, -60, 160, 90][i % 5], y: (i) => [60, -80, 120, -40, 90][i % 5], opacity: 0, skewX: -18, duration: 0.9, stagger: 0.06 }, 0.1)
-.to(logo, { x: 0, y: 0, scale: 1, duration: 1, ease: 'expo.inOut' }, 1.05)
-.to('.cover__photo', { clipPath: 'inset(0% 0 0 0 round 26px)', duration: 1.1, ease: 'expo.inOut' }, 1.05)
-.from('.cover__photo img', { scale: 1.25, duration: 1.6 }, 1.05)
-.to(content, { opacity: 1, y: 0, duration: 0.8, stagger: 0.06 }, 1.65)
-.add(() => logo.classList.add('is-shining'), 1.7);
+gsap.set(cut, { opacity: 0, y: 50, scale: 1.05, filter: 'grayscale(1) contrast(1.12) blur(10px)' });
+gsap.set([back, glow], { opacity: 0 });
+gsap.set(content, { opacity: 0, y: 18 });
+tl.from(parts, { opacity: 0, y: 26, scale: 0.92, duration: 1.1, stagger: 0.09 }, 0.15)
+.to(logo, { scale: s * 1.03, duration: 0.5, ease: 'sine.inOut', yoyo: true, repeat: 1 }, 1.1)
+.to(logo, { x: 0, y: 0, scale: 1, duration: 1.3, ease: 'power2.inOut' }, 1.75)
+.to(glow, { opacity: 1, duration: 1.4, ease: 'sine.out' }, 1.75)
+.to(back, { opacity: 0.75, duration: 1.6, ease: 'sine.out' }, 1.9)
+.to(cut, { opacity: 1, y: 0, scale: 1, filter: 'grayscale(1) contrast(1.12) blur(0px)', duration: 1.5, ease: 'power2.out' }, 1.9)
+.to(content, { opacity: 1, y: 0, duration: 0.9, stagger: 0.07, ease: 'power2.out' }, 2.6)
+.add(() => logo.classList.add('is-shining'), 3.0);
 } else {
-gsap.from([$('.cover'), ...content], { opacity: 0, y: 14, duration: 0.6, stagger: 0.04, ease: 'power3.out' });
+gsap.from([$('.cover'), ...content], { opacity: 0, y: 12, duration: 0.9, stagger: 0.05, ease: 'power2.out' });
 setTimeout(() => logo.classList.add('is-shining'), 500);
 }
 }

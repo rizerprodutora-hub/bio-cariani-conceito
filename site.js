@@ -26,13 +26,16 @@ e.preventDefault(); lenis.scrollTo(id, { offset: -64 });
 }
 if (motion) {
 const parts = $$('.hero__logo svg path');
-G.timeline({ defaults: { ease: 'expo.out' } })
-.from('.hero__photo', { clipPath: 'inset(100% 0 0 0 round 26px)', duration: 1.1, ease: 'expo.inOut' }, 0)
-.from('.hero__photo img', { scale: 1.25, duration: 1.8 }, 0)
-.from(parts, { x: (i) => [-90, 80, -40, 110, 60][i % 5], y: (i) => [40, -50, 70, -30, 50][i % 5], opacity: 0, skewX: -16, duration: 0.9, stagger: 0.06 }, 0.45)
-.add(() => $('.hero__logo').classList.add('is-shining'), 1.35)
-.from('.hero h1, .hero p, .hero__cta', { opacity: 0, y: 20, duration: 0.8, stagger: 0.08 }, 0.75);
-G.to('.hero__photo img', { scale: 1.12, yPercent: 6, ease: 'none', scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true } });
+G.set('.hero__cut', { filter: 'grayscale(1) contrast(1.12) blur(10px)' });
+G.timeline({ defaults: { ease: 'power3.out' } })
+.from('.hero__glow', { opacity: 0, duration: 1.4, ease: 'sine.out' }, 0)
+.from('.hero__back', { opacity: 0, duration: 1.6, ease: 'sine.out' }, 0.1)
+.from('.hero__cut', { opacity: 0, y: 50, scale: 1.05, duration: 1.5, ease: 'power2.out' }, 0.15)
+.to('.hero__cut', { filter: 'grayscale(1) contrast(1.12) blur(0px)', duration: 1.3, ease: 'power2.out' }, 0.15)
+.from(parts, { opacity: 0, y: 26, scale: 0.92, duration: 1.1, stagger: 0.09 }, 0.7)
+.add(() => $('.hero__logo').classList.add('is-shining'), 1.7)
+.from('.hero h1, .hero p, .hero__cta', { opacity: 0, y: 18, duration: 0.9, stagger: 0.08, ease: 'power2.out' }, 1.0);
+G.to('.hero__cut', { yPercent: 8, ease: 'none', scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true } });
 G.to('.hero__text', { y: -40, ease: 'none', scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true } });
 G.to('.nav__progress', { scaleX: 1, ease: 'none', scrollTrigger: { start: 0, end: 'max', scrub: 0.3 } });
 $$('.title').forEach((t) => {
@@ -63,8 +66,6 @@ el.addEventListener('touchstart', (e) => { el.classList.add('is-touch'); move(e.
 el.addEventListener('touchend', () => setTimeout(() => el.classList.remove('is-touch'), 400));
 };
 $$('.course').forEach((c) => follow(c));
-const hp = $('.hero__photo'), hl = $('.hero__light');
-if (hp && hl) hp.addEventListener('pointermove', (e) => { const r = hp.getBoundingClientRect(); hl.style.setProperty('--lx', ((e.clientX - r.left) / r.width) * 100 + '%'); hl.style.setProperty('--ly', ((e.clientY - r.top) / r.height) * 100 + '%'); });
 const hlg = $('.hero__logo');
 hlg && hlg.addEventListener('pointerenter', () => { hlg.classList.remove('is-shining'); void hlg.offsetWidth; hlg.classList.add('is-shining'); });
 const nav = $('.nav');

@@ -9,13 +9,15 @@
 <meta name="robots" content="noindex">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Saira:ital,wdth,wght@0,50..125,100..900;1,50..125,100..900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="bio.css?v=4">
+<link rel="stylesheet" href="bio.css?v=5">
 </head>
 <body>
 <main class="bio">
 
   <header class="cover">
-    <div class="cover__photo"><span class="cover__light" aria-hidden="true"></span><img src="https://redectrc.com.br/cdn/shop/files/DSCF0627.jpg?width=1200" alt="Renato Cariani" width="1200" height="1200" fetchpriority="high"></div>
+    <div class="cover__glow" aria-hidden="true"></div>
+    <div class="cover__back" data-logo="assets/logo-simbolo.svg" aria-hidden="true"></div>
+    <img class="cover__cut" src="assets/cariani-recorte.webp" alt="Renato Cariani" width="900" height="1319" fetchpriority="high">
     <div class="cover__logo shine" data-logo="assets/logo-simbolo-partes.svg" aria-hidden="true"></div>
   </header>
 
@@ -27,7 +29,7 @@
 
   <button class="video" type="button" data-yt="wivpYjAFIyA" aria-label="Assistir o vídeo novo">
     <span class="video__thumb"><img src="https://i.ytimg.com/vi/wivpYjAFIyA/mqdefault.jpg" alt="" loading="lazy"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span>
-    <span class="video__text"><small>Vídeo novo no canal</small><b>Júlio Balestrin anunciou sua aposentadoria</b></span>
+    <span class="video__text"><small><i class="live" aria-hidden="true"></i>Vídeo novo no canal</small><b>Júlio Balestrin anunciou sua aposentadoria</b></span>
   </button>
 
   <div class="tabs" role="tablist" aria-label="O que você procura">
@@ -129,6 +131,6 @@
 <div class="toast" role="status" aria-live="polite"></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-<script src="bio.js?v=3"></script>
+<script src="bio.js?v=4"></script>
 </body>
 </html>
