@@ -11,7 +11,8 @@ try { const r = await fetch(el.dataset.logo); if (r.ok) el.innerHTML = await r.t
 /* ---------- abertura ---------- */
 const seen = (() => { try { return sessionStorage.getItem('rc-open'); } catch (e) { return 1; } })();
 const logo = $('.cover__logo');
-const content = $$('.who, .video, .tabs, .panels, .social, .site, .foot');
+const content = $$('.who, .hl, .video, .tabs, .panels, .feed, .site, .foot');
+const unhide = () => document.documentElement.classList.remove('rc-opening');
 if (window.gsap && !reduce) {
 if (!seen) {
 try { sessionStorage.setItem('rc-open', 1); } catch (e) {}
@@ -25,20 +26,23 @@ const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
 gsap.set(logo, { x: dx, y: dy, scale: s });
 gsap.set(cut, { opacity: 0, y: 50, scale: 1.05 });
 gsap.set([back, glow], { opacity: 0 });
-gsap.set(content, { opacity: 0, y: 18 });
+gsap.set(content, { autoAlpha: 0, y: 18 });
+unhide();
 tl.from(parts, { opacity: 0, y: 26, scale: 0.92, duration: 1.1, stagger: 0.09 }, 0.15)
 .to(logo, { scale: s * 1.03, duration: 0.5, ease: 'sine.inOut', yoyo: true, repeat: 1 }, 1.1)
 .to(logo, { x: 0, y: 0, scale: 1, duration: 1.3, ease: 'power2.inOut' }, 1.75)
 .to(glow, { opacity: 1, duration: 1.4, ease: 'sine.out' }, 1.75)
 .to(back, { opacity: 0.75, duration: 1.6, ease: 'sine.out' }, 1.9)
 .to(cut, { opacity: 1, y: 0, scale: 1, duration: 1.6, ease: 'power2.out' }, 1.9)
-.to(content, { opacity: 1, y: 0, duration: 0.9, stagger: 0.07, ease: 'power2.out' }, 2.6)
+.to(content, { autoAlpha: 1, y: 0, duration: 0.9, stagger: 0.07, ease: 'power2.out' }, 2.6)
 .add(() => logo.classList.add('is-shining'), 3.0);
 } else {
-gsap.from([$('.cover'), ...content], { opacity: 0, y: 12, duration: 0.9, stagger: 0.05, ease: 'power2.out' });
+unhide();
+gsap.from([$('.cover'), ...content], { autoAlpha: 0, y: 12, duration: 0.9, stagger: 0.05, ease: 'power2.out' });
 setTimeout(() => logo.classList.add('is-shining'), 500);
 }
 }
+unhide();
 /* ---------- abas ---------- */
 const tabs = $$('[role="tab"]');
 const pill = $('.tabs__pill');
@@ -130,11 +134,7 @@ const close = () => { sheet.hidden = true; slot.innerHTML = ''; dispatchEvent(ne
 const playYT = (id) => { slot.innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0&playsinline=1" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen title="Vídeo do canal"></iframe>`; sheet.hidden = false; dispatchEvent(new Event('rc:pause')); $('.sheet__close').focus(); };
 addEventListener('rc:video', (e) => playYT(e.detail));
 addEventListener('rc:toast', (e) => say(e.detail));
-$$('[data-yt]').forEach((b) => b.addEventListener('click', () => {
-slot.innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${b.dataset.yt}?autoplay=1&rel=0&playsinline=1" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen title="Vídeo do canal"></iframe>`;
-sheet.hidden = false;
-$('.sheet__close').focus();
-}));
+$$('[data-yt]').forEach((b) => b.addEventListener('click', () => playYT(b.dataset.yt)));
 $('.sheet__close').addEventListener('click', close);
 sheet.addEventListener('click', (e) => { if (e.target === sheet) close(); });
 addEventListener('keydown', (e) => { if (e.key === 'Escape' && !sheet.hidden) close(); });

@@ -12,6 +12,7 @@ try { const r = await fetch(el.dataset.logo); if (r.ok) el.innerHTML = await r.t
 }));
 const fl = $('[data-fill]');
 if (fl) { const f = document.createElement('span'); f.className = 'fill'; f.innerHTML = fl.innerHTML; fl.appendChild(f); }
+document.documentElement.classList.remove('rc-opening');
 const motion = G && ST && !reduce;
 if (motion) G.registerPlugin(ST);
 let lenis = null;
