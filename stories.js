@@ -75,15 +75,16 @@ function markSeen(id) { seen[id] = Date.now(); save(); }
 function render() {
 const st = STORIES[cur], s = st.slides[i];
 $('.story__avatar img', box).src = st.avatar;
-$('.story__name', box).textContent = st.name;
+const T = window.rcT || ((x) => x);
+$('.story__name', box).textContent = T(st.name);
 bars.innerHTML = st.slides.map((_, k) => `<i><b style="transform:scaleX(${k < i ? 1 : 0})"></b></i>`).join('');
 media.innerHTML = s.logo
 ? `<div class="story__logo${s.logoDark ? ' is-dark' : ''}"><img src="${s.logo}" alt="" draggable="false"></div>`
 : `<img class="${s.cut ? 'is-cut' : ''}" src="${s.img}" alt="" draggable="false" onerror="this.onerror=null;this.src=this.src.replace('maxresdefault','hqdefault')">`;
-tKick.textContent = s.kicker || '';
-tTitle.textContent = s.title || '';
-tText.textContent = s.text || '';
-cta.textContent = s.cta ? s.cta.label : '';
+tKick.textContent = T(s.kicker || '');
+tTitle.textContent = T(s.title || '');
+tText.textContent = T(s.text || '');
+cta.textContent = s.cta ? T(s.cta.label) : '';
 cta.hidden = !s.cta;
 cta.removeAttribute('data-copy'); cta.removeAttribute('data-video');
 if (s.cta && s.cta.href) { cta.href = s.cta.href; } else { cta.removeAttribute('href'); }

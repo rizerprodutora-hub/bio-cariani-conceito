@@ -13,6 +13,27 @@ const seen = (() => { try { return sessionStorage.getItem('rc-open'); } catch (e
 const logo = $('.cover__logo');
 const content = $$('.who, .hl, .video, .tabs, .panels, .feed, .site, .foot');
 const unhide = () => document.documentElement.classList.remove('rc-opening');
+const outline = () => {
+const full = $('.cover__back');
+if (!full || !full.innerHTML || logo.classList.contains('is-outline')) return;
+logo.innerHTML = full.innerHTML;
+requestAnimationFrame(() => requestAnimationFrame(() => logo.classList.add('is-outline')));
+};
+const startTrace = () => {
+const back = $('.cover__back');
+if (reduce || !back || !back.querySelector('path') || $('.cover__trace')) return;
+const tr = document.createElement('div');
+tr.className = 'cover__trace'; tr.setAttribute('aria-hidden', 'true');
+tr.innerHTML = back.innerHTML;
+tr.querySelectorAll('path').forEach((p) => p.setAttribute('pathLength', '1000'));
+back.after(tr);
+const fire = () => {
+if (document.hidden || tr.getBoundingClientRect().bottom < 0) return;
+tr.classList.remove('is-on'); void tr.offsetWidth; tr.classList.add('is-on');
+};
+setTimeout(fire, 900);
+setInterval(fire, 8000);
+};
 if (window.gsap && !reduce) {
 if (!seen) {
 try { sessionStorage.setItem('rc-open', 1); } catch (e) {}
@@ -35,14 +56,16 @@ tl.from(parts, { opacity: 0, y: 26, scale: 0.92, duration: 1.1, stagger: 0.09 },
 .to(back, { opacity: 0.75, duration: 1.6, ease: 'sine.out' }, 1.9)
 .to(cut, { opacity: 1, y: 0, scale: 1, duration: 1.6, ease: 'power2.out' }, 1.9)
 .to(content, { autoAlpha: 1, y: 0, duration: 0.9, stagger: 0.07, ease: 'power2.out' }, 2.6)
-.add(() => logo.classList.add('is-shining'), 3.0);
+.add(() => { outline(); logo.classList.add('is-shining'); startTrace(); }, 3.0);
 } else {
 unhide();
 gsap.from([$('.cover'), ...content], { autoAlpha: 0, y: 12, duration: 0.9, stagger: 0.05, ease: 'power2.out' });
+outline(); startTrace();
 setTimeout(() => logo.classList.add('is-shining'), 500);
 }
 }
 unhide();
+if (!window.gsap || reduce) outline();
 /* ---------- abas ---------- */
 const tabs = $$('[role="tab"]');
 const pill = $('.tabs__pill');
@@ -61,6 +84,7 @@ current.classList.remove('is-on'); current.hidden = true;
 next.hidden = false; next.classList.add('is-on');
 if (!window.gsap || reduce) return;
 const h1 = panelsBox.offsetHeight;
+gsap.fromTo(panelsBox, { height: h0 }, { height: h1, duration: 0.45, ease: 'power2.inOut', clearProps: 'height' });
 gsap.from(next.children, { opacity: 0, y: 12, duration: 0.45, stagger: 0.04, ease: 'power3.out', clearProps: 'transform,opacity' });
 const t = $('.tabs').getBoundingClientRect().top;
 if (t < 0 && !auto) scrollBy({ top: t - 8, behavior: 'smooth' });
@@ -84,7 +108,7 @@ let max = 0;
 $$('.panel', panelsBox).forEach((p) => { const was = p.hidden; p.hidden = false; max = Math.max(max, p.offsetHeight); p.hidden = was; });
 panelsBox.style.minHeight = max + 'px';
 };
-fitPanels(); addEventListener('resize', fitPanels);
+panelsBox.style.minHeight = '';
 const STEP = 12000; let acc = 0, last = 0, running = !reduce, hold = 0, inView = true, rafA = 0;
 const tabsBox = $('.tabs');
 new IntersectionObserver((e) => { inView = e[0].isIntersecting; }, { threshold: 0.3 }).observe(panelsBox);
@@ -120,7 +144,7 @@ f.classList.remove('is-gleam'); void f.offsetWidth; f.classList.add('is-gleam');
 }, 6000);
 /* ---------- cupons ---------- */
 const toast = $('.toast');
-const say = (m) => { toast.textContent = m; toast.classList.add('is-on'); clearTimeout(say.h); say.h = setTimeout(() => toast.classList.remove('is-on'), 2000); };
+const say = (m) => { toast.textContent = window.rcT ? window.rcT(m) : m; toast.classList.add('is-on'); clearTimeout(say.h); say.h = setTimeout(() => toast.classList.remove('is-on'), 2000); };
 $$('[data-copy]').forEach((b) => b.addEventListener('click', () => {
 const code = b.dataset.copy, tag = b.querySelector('.code') || b;
 try { navigator.clipboard.writeText(code); } catch (e) {}
