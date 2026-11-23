@@ -23,9 +23,9 @@ ctrc: { name: 'CTRC', avatar: 'https://redectrc.com.br/cdn/shop/files/IMG_7287.j
 { img: 'https://redectrc.com.br/cdn/shop/files/IMG_7287.jpg?width=1200', kicker: 'Rede CTRC', title: 'Treine onde ele treina', text: 'Uberlândia, São Bernardo do Campo e Joinville. Em breve: Criciúma, Curitiba e Santo André.', cta: { label: 'Ver unidades', href: 'https://redectrc.com.br/collections/unidades' } },
 { img: 'https://redectrc.com.br/cdn/shop/files/CTRC_GOOGLE-18.jpg?width=900', kicker: 'Franquia', title: 'Leve o CTRC pra sua cidade', text: 'Modelo de negócio completo, com marca e metodologia.', cta: { label: 'Quero ser franqueado', href: 'https://inlead.digital/ctrc-investidores' } },
 ] },
-podcast: { name: 'IRONCAST', avatar: 'https://i.ytimg.com/vi/0RBhEwB3_vg/mqdefault.jpg', slides: [
-{ img: yt('0RBhEwB3_vg'), kicker: 'Podcast ao vivo', title: 'Os donos da Growth abrem o jogo', text: 'IRONCAST #423 · 473 mil visualizações.', video: '0RBhEwB3_vg', cta: { label: 'Assistir' } },
-{ img: yt('M5Sa-yBVgZ4'), kicker: 'Podcast ao vivo', title: 'O grande encontro', text: 'Com Muzy, Balestrin, Eduardo Correa e Jorlan. IRONCAST #122.', video: 'M5Sa-yBVgZ4', cta: { label: 'Assistir' } },
+podcast: { name: 'Podcast', avatar: 'https://i.ytimg.com/vi/0RBhEwB3_vg/mqdefault.jpg', slides: [
+{ img: yt('0RBhEwB3_vg'), kicker: 'Podcast ao vivo', title: 'Os donos da Growth abrem o jogo', text: 'Episódio #423 · 473 mil visualizações.', video: '0RBhEwB3_vg', cta: { label: 'Assistir' } },
+{ img: yt('M5Sa-yBVgZ4'), kicker: 'Podcast ao vivo', title: 'O grande encontro', text: 'Com Muzy, Balestrin, Eduardo Correa e Jorlan. Episódio #122.', video: 'M5Sa-yBVgZ4', cta: { label: 'Assistir' } },
 ] },
 gfarma: { name: 'GFarma', avatar: 'https://www.gfarma.com/cdn/shop/files/gfarma_favicon.svg', slides: [
 { logo: 'https://www.gfarma.com/cdn/shop/files/gfarma_favicon.svg', kicker: 'Cupom de desconto', title: 'GFarma', text: 'Manipulados. Use o cupom CTRC.', coupon: 'CTRC', cta: { label: 'Copiar CTRC e ir à loja', href: 'https://www.gfarma.com' } },
