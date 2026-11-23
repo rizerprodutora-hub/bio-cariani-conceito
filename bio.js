@@ -1,6 +1,6 @@
 /* Renato Cariani · link da bio
-Um único momento animado na abertura: o RK se monta no centro da tela
-e desce pro lugar dele sobre a foto. Depois disso, só o que responde ao toque. */
+Abertura de vidro na primeira visita (intro-vidro.js): cacos formam o RK,
+a câmera atravessa o logo e o perfil aparece. Depois disso, só o que responde ao toque. */
 (async function () {
 const $ = (s, c = document) => c.querySelector(s);
 const $$ = (s, c = document) => [...c.querySelectorAll(s)];
@@ -37,26 +37,22 @@ setInterval(fire, 8000);
 if (window.gsap && !reduce) {
 if (!seen) {
 try { sessionStorage.setItem('rc-open', 1); } catch (e) {}
-const parts = $$('svg path', logo);
-const box = logo.getBoundingClientRect();
-const dx = innerWidth / 2 - (box.left + box.width / 2);
-const dy = innerHeight / 2 - (box.top + box.height / 2);
-const s = Math.min(1.7, (innerWidth * 0.62) / box.width);
 const cut = $('.cover__cut'), back = $('.cover__back'), glow = $('.cover__glow');
-const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
-gsap.set(logo, { x: dx, y: dy, scale: s });
-gsap.set(cut, { opacity: 0, y: 50, scale: 1.05 });
-gsap.set([back, glow], { opacity: 0 });
+const bp = back && back.querySelector('path');
+outline();
+gsap.set(cut, { opacity: 0, y: 40, scale: 1.06 });
+gsap.set([back, glow, logo], { opacity: 0 });
 gsap.set(content, { autoAlpha: 0, y: 18 });
 unhide();
-tl.from(parts, { opacity: 0, y: 26, scale: 0.92, duration: 1.1, stagger: 0.09 }, 0.15)
-.to(logo, { scale: s * 1.03, duration: 0.5, ease: 'sine.inOut', yoyo: true, repeat: 1 }, 1.1)
-.to(logo, { x: 0, y: 0, scale: 1, duration: 1.3, ease: 'power2.inOut' }, 1.75)
-.to(glow, { opacity: 1, duration: 1.4, ease: 'sine.out' }, 1.75)
-.to(back, { opacity: 0.75, duration: 1.6, ease: 'sine.out' }, 1.9)
-.to(cut, { opacity: 1, y: 0, scale: 1, duration: 1.6, ease: 'power2.out' }, 1.9)
-.to(content, { autoAlpha: 1, y: 0, duration: 0.9, stagger: 0.07, ease: 'power2.out' }, 2.6)
-.add(() => { outline(); logo.classList.add('is-shining'); startTrace(); }, 3.0);
+const reveal = () => gsap.timeline({ defaults: { ease: 'power3.out' } })
+.to(glow, { opacity: 1, duration: 1.2, ease: 'sine.out' }, 0)
+.to(cut, { opacity: 1, y: 0, scale: 1, duration: 1.4, ease: 'expo.out' }, 0)
+.to(back, { opacity: 0.75, duration: 1.4, ease: 'sine.out' }, 0.1)
+.fromTo(logo, { opacity: 0, scale: 1.18 }, { opacity: 1, scale: 1, duration: 1, ease: 'expo.out' }, 0.3)
+.to(content, { autoAlpha: 1, y: 0, duration: 0.9, stagger: 0.07, ease: 'power2.out' }, 0.55)
+.add(() => { logo.classList.add('is-shining'); startTrace(); }, 1.1);
+if (window.introVidro && bp) window.introVidro({ d: bp.getAttribute('d'), onReveal: reveal });
+else reveal();
 } else {
 unhide();
 gsap.from([$('.cover'), ...content], { autoAlpha: 0, y: 12, duration: 0.9, stagger: 0.05, ease: 'power2.out' });

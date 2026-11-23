@@ -28,13 +28,19 @@ e.preventDefault(); lenis.scrollTo(id, { offset: -64 });
 }
 if (motion) {
 const parts = $$('.hero__logo svg path');
-G.timeline({ defaults: { ease: 'power3.out' } })
+const heroIn = () => G.timeline({ defaults: { ease: 'power3.out' } })
 .from('.hero__glow', { opacity: 0, duration: 1.4, ease: 'sine.out' }, 0)
 .from('.hero__back', { opacity: 0, duration: 1.6, ease: 'sine.out' }, 0.1)
 .from('.hero__cut', { opacity: 0, y: 50, scale: 1.05, duration: 1.5, ease: 'power2.out' }, 0.15)
 .from(parts, { opacity: 0, y: 26, scale: 0.92, duration: 1.1, stagger: 0.09 }, 0.7)
 .add(() => $('.hero__logo').classList.add('is-shining'), 1.7)
 .from('.hero h1, .hero p, .hero__cta', { opacity: 0, y: 18, duration: 0.9, stagger: 0.08, ease: 'power2.out' }, 1.0);
+const firstSite = (() => { try { return !sessionStorage.getItem('rc-open-site'); } catch (e) { return false; } })();
+const hb = $('.hero__back path');
+if (firstSite && window.introVidro && hb) {
+try { sessionStorage.setItem('rc-open-site', 1); } catch (e) {}
+window.introVidro({ d: hb.getAttribute('d'), onReveal: heroIn });
+} else heroIn();
 if (fine) G.to('.hero__cut', { yPercent: 8, ease: 'none', scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true } });
 if (fine) G.to('.hero__text', { y: -40, ease: 'none', scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true } });
 G.to('.nav__progress', { scaleX: 1, ease: 'none', scrollTrigger: { start: 0, end: 'max', scrub: 0.3 } });
